@@ -8,6 +8,13 @@ let _getAppState = () => {
 
 export default class Main extends React.Component {
 
+    static propTypes = {
+        limit: React.PropTypes.number
+    }
+
+    static defaultProps = {
+        limit: 4
+    }
     constructor(props){
         super(props);
         this.state = _getAppState();
@@ -26,7 +33,8 @@ export default class Main extends React.Component {
         this.setState(_getAppState());
     }
 	render() {
-        let content = this.state.links.map(link => {
+
+        let content = this.state.links.slice(0, this.props.limit).map(link => {
             return <li key={link._id}>
                 <a href={link.url}>{link.title}</a>
             </li>;
@@ -41,3 +49,13 @@ export default class Main extends React.Component {
     );
   }
 }
+
+/**
+Main.propTypes = {
+    limit: React.PropTypes.number
+}
+
+Main.defaultProps = {
+    limit: 4
+}
+**/

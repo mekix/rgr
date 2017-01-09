@@ -1,10 +1,19 @@
-import {get} from "jquery";
+import {post} from "jquery";
 import ServerActions from "./actions/ServerActions";
 
 let API = {
 	fetchLinks(){
-		get("/data/links").done(resp => {
-			ServerActions.receiveLins(resp);
+		post("/graphql", {
+			query: `{
+				links {
+					_id,
+					title,
+					url
+				}
+			}
+			`
+		}).done(resp => {
+			ServerActions.receiveLins(resp.data.links);
 		})
 	}
 }

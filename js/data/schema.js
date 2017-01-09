@@ -2,33 +2,34 @@ import {
 	GraphQLSchema, 
 	GraphQLObjectType, 
 	GraphQLString,
+	GraphQLList,
 	GraphQLInt
 } from "graphql";
 
-let schema = new GraphQLSchema({
-	query: new GraphQLObjectType({
-		name:"Query",
-		fields:() => ({
-			counter:{
-				type: GraphQLInt,
-				resolve:() => 45
-			},
-			message:{
-				type: GraphQLString,
-				resolve: () => "Hello GraphQL"
-			}
-		})
-	}),
+// NEED ACCESS TO MONGO DB
+let Schema = (db) => {
 
-	mutation: new GraphQLObjectType({
-		name: 'Mutation',
+	let LinkType = new GraphQLObjectType({
+		name:'Link',
 		fields: () => ({
-			incrementCounter: {
-				type: GraphQLInt,
-				resolve: () => ++counter
-			}
+			_id: {type: GraphQLString},
+			title: {type: GraphQLString},
+			url: {type: GraphQLString}
 		})
-	})
-});
+	});
 
-export default schema;
+	let schema = new GraphQLSchema({
+		query: new GraphQLObjectType({
+			name:"Query",
+			fields:() => ({
+				links:{
+					type: new GraphQLList(LinkType),
+					resolve:() => db.collection("links").find({}).toArray()
+				}
+			})
+		})
+	});
+	return schema;
+};
+
+export default Schema;
